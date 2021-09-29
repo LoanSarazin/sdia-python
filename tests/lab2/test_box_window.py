@@ -33,10 +33,11 @@ def box_2d_05():
 @pytest.mark.parametrize(
     "point, expected",
     [
-        (np.array([0, 0]), True),
-        (np.array([2.5, 2.5]), True),
-        (np.array([-1, 5]), False),
-        (np.array([10, 3]), False),
+        (np.array([0, 0]), [1]),
+        (np.array([2.5, 2.5]), [1]),
+        (np.array([-1, 5]), [0]),
+        (np.array([10, 3]), [0]),
+        (np.array([[0, 0], [3, 3], [6, 5]]), [1, 1, 0]),
     ],
 )
 def test_indicator_function_box_2d(box_2d_05, point, expected):
@@ -47,3 +48,30 @@ def test_indicator_function_box_2d(box_2d_05, point, expected):
 # ================================
 # ==== WRITE YOUR TESTS BELOW ====
 # ================================
+@pytest.mark.parametrize(
+    "box_window, expected",
+    [
+        (BoxWindow([[1, 3], [2, 6], [2, 3], [5, 7]]), 4),
+        (BoxWindow([[1, 8], [2, 4]]), 2),
+    ],
+)
+def test_len(box_window, expected):
+    assert len(box_window) == expected
+
+
+@pytest.mark.parametrize(
+    "point, expected",
+    [(np.array([1, 1]), True), (np.array([0, 5]), True), (np.array([1, 7]), False)],
+)
+def test_box2d_contains(box_2d_05, point, expected):
+    contain = point in box_2d_05
+    assert contain == expected
+
+
+@pytest.mark.parametrize(
+    "box_window, expected",
+    [(BoxWindow([[1, 3], [2, 6]]), 8), (BoxWindow([[1, 8], [2, 4]]), 14)],
+)
+def test_volume(box_window, expected):
+    vol = box_window.volume()
+    assert vol == expected

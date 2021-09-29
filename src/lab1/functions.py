@@ -19,6 +19,7 @@ def triangle_shape(height):
     Returns:
         str: a string representing the pyramid, made with the character "x"
     """
+
     pyramid = ""
     if height == 0:
         return pyramid
