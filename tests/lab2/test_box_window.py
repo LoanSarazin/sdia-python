@@ -51,8 +51,8 @@ def test_indicator_function_box_2d(box_2d_05, point, expected):
 @pytest.mark.parametrize(
     "box_window, expected",
     [
-        (BoxWindow([[1, 3], [2, 6], [2, 3], [5, 7]]), 4),
-        (BoxWindow([[1, 8], [2, 4]]), 2),
+        (BoxWindow(np.array([[1, 3], [2, 6], [2, 3], [5, 7]])), 4),
+        (BoxWindow(np.array([[1, 8], [2, 4]])), 2),
     ],
 )
 def test_len(box_window, expected):
@@ -70,7 +70,10 @@ def test_box2d_contains(box_2d_05, point, expected):
 
 @pytest.mark.parametrize(
     "box_window, expected",
-    [(BoxWindow([[1, 3], [2, 6]]), 8), (BoxWindow([[1, 8], [2, 4]]), 14)],
+    [
+        (BoxWindow(np.array([[1, 3], [2, 6]])), 8),
+        (BoxWindow(np.array([[1, 8], [2, 4]])), 14),
+    ],
 )
 def test_volume(box_window, expected):
     vol = box_window.volume()

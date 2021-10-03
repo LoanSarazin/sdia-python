@@ -3,7 +3,7 @@ import numpy as np
 
 
 class BoxWindow:
-    """[summary]"""
+    r"""BoxWindow: :math:`[a_1, b_1] \times [a_2, b_2] \times \cdots`"""
 
     def __init__(self, boundsArg):
         """Initialize the BoxWindow from the bounds given in the array
@@ -12,7 +12,7 @@ class BoxWindow:
             boundsArg (array): array of bounds containing the coordinates of each bound
         """
 
-        self.bounds = np.array(boundsArg)
+        self.bounds = boundsArg
 
     def __str__(self):
         """Display the BoxWindow in a string
@@ -80,7 +80,7 @@ class BoxWindow:
             list of int: the i-th element is 1 if the i-th point given in argument is inside the box, 0 otherwise
         """
 
-        if points.size <= 2:
+        if len(points.shape) == 1:
             return [int(points in self)]
         else:
             return [int(p in self) for p in points]
@@ -112,4 +112,4 @@ class UnitBoxWindow(BoxWindow):
         """
         bounds = np.zeros((dimension, 2))
         bounds[:, 0], bounds[:, 1] = center - 0.5, center + 0.5
-        # super(BoxWindow, self).__init__(bounds)
+        super(UnitBoxWindow, self).__init__(bounds)
