@@ -1,87 +1,98 @@
-from lab2.utils import get_random_number_generator
 import numpy as np
 import numpy.linalg as la
 from math import gamma
+from lab2.utils import get_random_number_generator
 
 
 class BallWindow:
-    """BallWindow: :math:`X in \mathbb{R}^{n},\, \|X-C\|_{2}\leq r`"""
+    """Creates a Ball window, meaning a volume around a center point with a radius"""
 
     def __init__(self, center, radius=1.0):
-        """Initialize the BallWindow from the bounds given and from a radius
+        """Initialize the BallWindows from the center and the radius
 
         Args:
-            center (array): Array containing the coordinates of the center.
-            radius (float, optional): The radius of the BallWindow. Defaults to 1.
+            center (list) : gives the coordinates of the center
+            radius (int) : gives the radius of the ball. Default to 1.
         """
-
-        self.center = center
-        self.radius = radius
+        self.center = np.array(center)
+        self.radius = float(radius)
 
     def __str__(self):
         """Display the BallWindow in a string
 
         Returns:
-            str: BallWindow center coordinates and radius
+            [string]: BallWindows center and radius
         """
-
-        return "BallWindow: center={}, radius={:.2f}".format(
-            np.round(self.center, 2), self.radius
+        description = (
+            "BallWindow: center"
+            + str(list(self.center))
+            + " & radius["
+            + str(self.radius)
+            + "]."
         )
+        return description
 
     def __len__(self):
-        """Return the dimension of the space in which the box is
+        """Returns the dimension of the space of the BallWindow
 
         Returns:
-            int: The  dimension of the box
+            [int]: size of the space containing the BallWindow
         """
-
-        return len(self.center)
+        return self.center.shape[0]
 
     def __contains__(self, point):
-        """Check if a point is inside the BallWindow.
+        """Indicates whether the argument given is inside the Ball Window of not.
+        Assertion error if the dimension of the point is not equal to the dimension of the BallWindow
 
         Args:
-            point (array): The coordinates of a point
+            point (np.array): [list of coordinates]
 
         Returns:
-            bool: True if the point is the point is inside the box, False otherwise
+            [boolean]: [True if the point is inside, else returns False]
         """
-
-        assert len(point) == len(self)  # Test if the point has the same dimension
+        assert len(point) == len(self)  ##Test if the point has the same dimension
         return la.norm(self.center - point) <= self.radius
 
     def dimension(self):
-        """Return the dimension of the space in which the box is. See __len__
-
-        Returns:
-            int: the dimension of the box (number of sides)
-        """
-
+        """Gives the dimension of the BallWindow"""
         return len(self)
 
     def volume(self):
-        """Return the volume of the BoxWindow
+        """Gives the volume of the BallWindow
 
         Returns:
-            int: the volume of the box
+            [int]: [volume]
         """
-
         n = self.dimension()
         R = self.radius
         return (np.pi ** (n / 2) * R ** (n)) / gamma(1 + n / 2)
 
-    def indicator_function(self, points):
-        """Return an array of int (0 or 1), saying if the points given are inside the BoxWindow
+    def indicator_function(self, array_points):
+        """Gives the result of the indicator function of the BallWindows given some points of the same dimension
 
         Args:
-            points (array): the coordinates of a point, or an array of point
-
-        Returns:
-            list of int: the i-th element is 1 if the i-th point given in argument is inside the box, 0 otherwise
+            args ([int]): 1 if the argument is inside the BallWindow, else 0
         """
+        if len(array_points.shape) > 1:
+            return np.array([int(p in self) for p in array_points])
+        return int(array_points in self)
 
-        if len(points.shape) == 1:
-            return [int(points in self)]
-        else:
-            return [int(p in self) for p in points]
+    def rand(self, n=1, rng=None):
+        """Generate ``n`` points uniformly at random inside the :py:class:`BallWindow`.
+
+        Args:
+            n (int, optional): Number of random points to generate. Defaults to 1.
+            rng (type, optional): Defaults to None.
+
+        Returns: array which contains n points randomly uniformly generated
+
+        """
+        dim = len(self)
+        rng = get_random_number_generator(rng)
+        r = self.radius
+        res = rng.uniform(0, 1, (n, dim))
+        normalis = np.apply_along_axis(np.linalg.norm, axis=0, arr=res)
+        res = res / normalis
+        dist = rng.uniform(-r, r, (n, 1))
+        res = res * dist
+        return res + self.center
