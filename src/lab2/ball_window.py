@@ -14,10 +14,10 @@ class BallWindow:
 
         Args:
             center (list) : gives the coordinates of the center
-            radius (int) : gives the radius of the ball. Default to 1.
+            radius (float) : gives the radius of the ball. Default to 1.
         """
         self.center = np.array(center)
-        self.radius = float(radius)  # why converting to float
+        self.radius = radius
 
     def __str__(self):
         """Display the BallWindow in a string
