@@ -7,15 +7,15 @@ class BoxWindow:
     """Class that creates BoxWindows in any dimension."""
 
     def __init__(self, bounds_args):  # ! naming: snake case for args
-        """Initializes the BoxWindows from the bounds given in the array.
+        """Initialize the BoxWindows from the bounds given in the array.
 
         Args:
-            boundsArg (np.array or list): array of bounds containing the coordinates of each bound
+            bounds_args (array or list): array (or list) of bounds containing the coordinates of each bound
         """
         bounds = np.array(bounds_args)
         a = bounds[:, 0]
         b = bounds[:, 1]
-        # Test if the bounds are correct ie a <= b
+        # Test if the bounds given are correct ie a <= b
         assert np.all(a <= b), "The bounds given are incorrect"
         self.bounds = bounds
 
@@ -50,7 +50,7 @@ class BoxWindow:
             boolean: True if the point is inside, else returns False
         """
         # ? readability: == self.dimension()
-        # Test if the point has the same dimension
+        ##Test if the point has the same dimension
         assert len(point) == self.dimension(), "The point has an incorrect dimension"
 
         a, b = self.bounds[:, 0], self.bounds[:, 1]
@@ -67,7 +67,6 @@ class BoxWindow:
         Returns:
             int: volume
         """
-
         return np.prod(np.diff(self.bounds))
 
     def indicator_function(self, array_points):
@@ -76,8 +75,8 @@ class BoxWindow:
         Args:
             args (int): 1 if the argument is inside the BoxWindow, else 0
         """
-        if array_points.ndim > 1:
-            return np.array([int(p in self) for p in array_points], dtype=int)
+        if array_points.ndim > 1:  # * use .ndim
+            return np.array([p in self for p in array_points], dtype=int)
         return int(array_points in self)
 
     def rand(self, n=1, rng=None):
@@ -87,9 +86,9 @@ class BoxWindow:
             n (int, optional): Number of random points to generate. Defaults to 1.
             rng (seed, optional): Defaults to None.
 
-        Returns: (n, d) array which contains n points randomly uniformly generated in a BowWindow of dimension d
+        Returns: (n, d) array which contains n points randomly uniformly generated in a BoxWindow of dimension d
         """
-        dim = self.dimension()
+        dim = self.dimension
         rng = get_random_number_generator(rng)
 
         # * Nice use of numpy!
@@ -106,5 +105,6 @@ class UnitBoxWindow(BoxWindow):
             center (array): coordinates of the center of the UnitBoxWindow
         """
         # ? how about np.add.outer
+        # * Nice inlining
         bounds = np.add.outer(center, [-0.5, 0.5])
         super(UnitBoxWindow, self).__init__(bounds)
