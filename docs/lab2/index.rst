@@ -9,3 +9,11 @@ BoxWindow
     :members:
     :inherited-members:
     :show-inheritance:
+
+BallWindow
+=========
+
+.. automodule:: lab2.ball_window
+    :members:
+    :inherited-members:
+    :show-inheritance:
